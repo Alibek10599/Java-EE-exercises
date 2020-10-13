@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>pagingexercise361</title>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/lodash.min.js"></script>
+
+<script type="text/javascript">
+var app = {
+        items : [],
+        nextpage : 0,
+        prevpage : 0
+};
+
+function updateList() {
+    var current;
+    if (isNaN(app.prevpage))
+        $("#prev-button").attr("disabled",true);
+    else $("#prev-button").attr("disabled",false);
+    if (isNaN(app.nextpage)){
+        current_page = 9;
+        $("#next-button").attr("disabled",true);
+    }
+    else {
+        $("#next-button").attr("disabled",false);
+        current_page = app.nextpage - 1;
+    }
+    $("#my-list").html("");
+    app.items.forEach(function (e) {
+        $("#my-list").append("<li>" + e + "</li>");
+    });
+}
+
+function getListItems(p) {
+
+    $.ajax({
+        url : 'services/items?page='+p,
+        dataType : 'json',
+        success : function(r) {
+            app.items = r.list;
+            app.nextpage = parseInt(r.next);
+            app.prevpage = parseInt(r.prev);
+
+            updateList();
+        }
+    });
+}
+
+function sendListItem() {
+    var s = $("#texttosend").val();
+
+    $.post("todo", { texttosend: s}, function() {
+        getListItems();
+    });
+}
+
+$(document).ready(function () {
+    getListItems(0);
+    $("#prev-button").on('click', function () {
+        getListItems(app.prevpage);
+    });
+
+    $("#next-button").on('click', function () {
+        getListItems(app.nextpage);
+    });
+    $("#send-item").on('click', function () {
+        sendListItem();
+    });
+});
+
+</script>
+</head>
+<body>
+<h2>Paging Application</h2>
+
+
+<ul id="my-list"></ul>
+
+
+<br>
+<button id="prev-button" >Previous</button>
+<button id="next-button" >Next</button>
+
+</body>
+</html>

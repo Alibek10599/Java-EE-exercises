@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><script type="text/javascript"></head>
+<body>
+<input type ='button' id="id" onClick="a();">
+<div id='a'></div>
+
+<script>
+    var counter = 0;
+
+    function a ()
+    {
+        if (counter++ < 5)
+            document.getElementById('a').innerHTML += "<input type='radio'>";
+        else
+            document.getElementById('id').disabled = true;
+    }
+
+</script>
+</body>
+</html>
